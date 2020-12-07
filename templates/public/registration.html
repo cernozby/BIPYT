@@ -1,0 +1,68 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center form">
+  <div class="col-md-4">
+    <div class="card bg-gray-light">
+      <div class="card-header bg-primary"><span class="panel-title text-light">Registrace</span>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="input-container">
+            <i class="fa fa-user icon"></i>
+              <input type="text" placeholder="jméno" name="firstName" required/>
+          </div>
+
+          <div class="input-container">
+            <i class="fa fa-user icon"></i>
+              <input type="text" placeholder="prijmeni" name="lastName" required>
+          </div>
+
+          <div class="input-container">
+            <i class="fa fa-envelope icon"></i>
+              <input type="email" placeholder="email" name="email" required>
+          </div>
+
+          <div class="input-container">
+            <i class="fa fa-lock icon"></i>
+              <input type="password" placeholder="heslo" name="passwd" id="password"required>
+          </div>
+
+          <div class="input-container">
+            <i class="fa fa-lock icon"></i>
+              <input type="password" placeholder="helo kontrola" name="passwdVerify" id="confirm_password" required>
+          </div>
+          <input type="submit" name="přihlásit"  value="zaregitrovat" id="confirm_password" class="btn btn-primary btn-block">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="container">
+  <div class="row justify-content-center">
+    <p>pokud jste zapoměli heslo, klidkněte <a href="#">zde.</a></p>
+  </div>
+</div>
+
+
+  {{ vysledek }}
+
+  <script>
+  var password = document.getElementById("password")
+  , confirm_password = document.getElementById("confirm_password");
+
+function validatePassword(){
+  if(password.value !== confirm_password.value) {
+    confirm_password.setCustomValidity("Zadaná hesla se neschodují");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+</script>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+.form {
+  padding-top: 50px;
+}
+.input-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+.input-container input {
+  width: 100%;
+  outline: none;
+  padding-left: 10px;
+}
+.input-container input:focus {
+  border: 2px solid blue;
+}
+/* Style the form icons */
+.icon {
+  padding: 10px;
+  background: dodgerblue;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+}
+/* Style the input fields */
+.flashMsq {
+  background: rgba(255, 0, 0, 0.5);
+  width: 100%;
+  padding: 10px 10px 10px 0px;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  position: absolute;
+}
+.container-padding-top {
+  padding-top: 50px;
+}
+/*# sourceMappingURL=style.css.map */
