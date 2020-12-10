@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+
+    <form method="post" action="/NewComp/">
+      {% csrf_token %}
+      <input class="form-control" type="number" name="edit" value="0" id="edit" hidden required>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" id="name" name="name" placeholder="Jméno závodu" required>
+        </div>
+        <div class="form-group col-md-4">
+          <input placeholder="Začátek závodu" class="form-control" name="start_date" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="start_date" required />
+        </div>
+        <div class="form-group col-md-4">
+          <input placeholder="Konec závodu" class="form-control" name="end_date" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="end_date" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <select class="form-control" name="type" id="type" required>
+            <option value="" disabled selected >typ závodu</option>
+            <option value="0">obtížnost</option>
+            <option value="1">boulder</option>
+            <option value="2">rychlost</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+          <select id="is_final" class="form-control" name="is_final" required>
+             <option value="" disabled selected>Finále</option>
+            <option value="1">Ano</option>
+            <option value="0">Ne</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+          <input type="number" class="form-control" name="min_age" id="min_age" placeholder="spodní věk" required>
+        </div>
+        <div class="form-group col-md-3">
+          <input type="number" class="form-control" name="max_age" id="max_age" placeholder="vrchní věk" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <select id="result_system" class="form-control" name="result_system" required>
+             <option value="" disabled selected>systém výsledků</option>
+            <option value="1">závodní</option>
+            <option value="0">amatérské</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+          <input type="text" class="form-control" id="city" name="city" placeholder="Město" required>
+        </div>
+        <div class="form-group col-md-6">
+          <input type="text" class="form-control" id="address" name="address" placeholder="Adresa" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-4"></div>
+        <button type="submit" class="btn btn-primary btn-block col-md-4">Uložit</button>
+      </div>
+
+
+    </form>
+
+    <br><br>
+    <table class="table table-striped text-left table-responsive-md">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Jméno</th>
+        <th>Dataum konání</th>
+        <th>typ</th>
+        <th>věkový rozptyl</th>
+        <th>systém výsledků</th>
+        <th>stav</th>
+        <th>finále</th>
+        <th style="width: 200px">akce</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for comp in comps %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ comp.name }}</td>
+          <td>
+            {% if comp.start_date == comp.end_date %}
+              {{ comp.start_date|date:"j. n. Y" }}
+            {% else %}
+              {{ comp.start_date|date:"j. n. Y" }} - {{ comp.end_date|date:"j. n. Y" }}
+            {% endif %}
+          </td>
+          <td>{{ comp_type_dict|get_item:comp.type }}</td>
+          <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
+          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
+          <td>{{ state_dict|get_item_string_key:comp.state }}</td>
+          <td>{{ comp.is_final|boolToWord }}</td>
+
+          <td>
+            <div class="text-nowrap">
+              <a class="btn btn-primary" href="{% url 'comps:deleteComp' ids=comp.id %}">smazat</a>
+              <a class="btn btn-primary" href="#" onclick="editComp( '{{ comp.id}}', '{{ comp.name}}','{{ comp.type }}' , '{{ comp.start_date|date:"Y-m-d" }}', '{{ comp.end_date|date:"Y-m-d"}}', '{{ comp.is_final}}', '{{ comp.min_age}}', '{{ comp.max_age}}', '{{ comp.result_system}}','{{ comp.city}}', '{{ comp.address}}' )">upravit</a>
+              <a class="btn btn-primary" href="{% url 'comps:deleteComp' ids=comp.id %}">kategorie</a>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+    <script>
+    function editComp(ids, name, type, start_date, end_date, is_final, min_age, max_age, result_system, city, address) {
+        $('#name').val(name);
+        $('#type').val(type);
+        $('#start_date').val(start_date);
+        $('#end_date').val(end_date);
+        $('#is_final').val(parseInt(is_final)).change();
+        $('#min_age').val(min_age);
+        $('#max_age').val(max_age);
+        console.log(result_system);
+        $('#result_system').val(parseInt(result_system));
+        $('#city').val(city);
+        $('#address').val(address);
+        $('#edit').val(ids);
+    }
+  </script>
+{% endblock %}

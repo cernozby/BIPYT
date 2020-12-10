@@ -40,7 +40,7 @@
           <td>{{ racer }}</td>
           <td>{{ racer.born }}</td>
           <td >
-            <a class="btn btn-primary" href="{% url 'deleteRacer' ids=racer.id %}">smazat</a>
+            <a class="btn btn-primary" href="{% url 'polls:deleteRacer' ids=racer.id %}">smazat</a>
             <a class="btn btn-primary" href="#" onclick="editRacer('{{ racer.id }}' , '{{ racer.first_name}}', '{{ racer.last_name}}', '{{  racer.born }}')">upravit</a>
           </td>
         </tr>
@@ -51,7 +51,6 @@
 
   <script>
     function editRacer(ids, first_name, last_name, born) {
-        console.log(born)
         $('#first_name').val(first_name);
         $('#last_name').val(last_name);
         $('#born').val(born);

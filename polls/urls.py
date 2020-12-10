@@ -3,6 +3,9 @@ from django.urls import path
 
 from . import views
 
+app_name = 'polls'
+
+
 urlpatterns = [
     path('', views.HomepageDefaultView),
     url('myLogout', views.myLogout, name='myLogout'),
@@ -11,5 +14,5 @@ urlpatterns = [
     path('administrace/moji-zavodnici', views.CompetitorsView),
     url('newRacer', views.newRacer, name='newRacer'),
     path('deleteRacer/<int:ids>', views.deleteRacer, name='deleteRacer'),
-    path('regitrace', views.RegistrationVIew),
+    path('regitrace', views.RegistrationVIew, name='registration'),
 ]

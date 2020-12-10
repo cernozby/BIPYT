@@ -51,7 +51,7 @@ def LoginView(request):
             login(request, user)
             messages.add_message(request, messages.INFO, 'Uživatel byl úspěšně prihlasen!',
                                  'fmgShort alert-success')
-            return render(request, 'public/registration.html')
+            return redirect('/administrace')
         else:
             messages.add_message(request, messages.ERROR, 'Prihlaseni se nepovedlo!',
                                  'fmgShort alert-danger')
@@ -65,7 +65,6 @@ def CompetitorsView(request):
         return render(request, 'public/homepage.html')
     else:
         return render(request, 'private/racers.html', dict(racers=Racer.objects.all()))
-        messages.add_message(request, messages.INFO, 'Neoprávnění přístup', 'fmgShort alert-danger')
 
 
 def RegistrationVIew(request):
@@ -93,3 +92,4 @@ def AdministrationView(request):
 
 def myLogout(request):
     logout(request)
+    return HttpResponseRedirect('/')
