@@ -55,3 +55,31 @@ class Comps(models.Model):
         if state:
             comp.state = 'prepare'
         comp.save()
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    year_from = models.IntegerField()
+    year_to = models.IntegerField()
+    comp = models.ForeignKey(Comps, on_delete=models.CASCADE, default=None, null=True)
+
+    def newCategory(self, rq):
+        comp = Comps.objects.get(id=rq.POST['comp_id'])
+        if Category.objects.all().filter(comp=comp, name=rq.POST['name']).exists():
+            raise Exception("Invalid name exeption. Name is already exist")
+        Category.objects.create(name=rq.POST['name'], year_from=rq.POST['year_from'], year_to=rq.POST['year_to'],
+                                comp=Comps.objects.get(id=rq.POST['comp_id']))
+
+    def editCategory(self, rq):
+        category = Category.objects.get(id=rq.POST['edit'])
+        category.year_to = rq.POST['year_to']
+        category.year_from = rq.POST['year_from']
+        category.name = rq.POST['name']
+
+        category.save()
+
+    def getYear(self):
+        if self.year_from == self.year_to:
+            return str(self.year_to)
+        else:
+            return str(self.year_from) + '-' + str(self.year_to)

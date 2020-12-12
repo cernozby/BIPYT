@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+
+    <form method="post" action="/newCategory/{{ comp.id }}">
+      {% csrf_token %}
+      <div class="form-row">
+        <label for="inputEmail3" class="col-md-2 col-form-label"><h5>kategorie:</h5></label>
+        <div class="col-md-3">
+          <input class="form-control" type="text" name="name" id="name" placeholder="Jméno" required/>
+        </div>
+        <div class="col-md-3">
+          <input class="form-control" type="number" name="year_from" id="year_from" placeholder="nejmladší (rok)" required>
+        </div>
+        <div class="col-md-3">
+          <input class="form-control" type="number" name="year_to" id="year_to" placeholder="nejstarší(rok)" required>
+        </div>
+        <div class="col-md-1">
+          <input class="form-control" type="number" name="edit" value="0" id="edit" hidden>
+          <input class="form-control" type="text" name="comp_id" id="comp_id" value="{{ comp.id }}" hidden>
+          <input type="submit" value="Uložit" class="btn btn-primary btn-block">
+        </div>
+      </div>
+    </form>
+
+    <br><br>
+    <table class="table table-striped text-left table-responsive-md">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>kategorie</th>
+        <th>ročník</th>
+        <th style="width: 200px">akce</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for category in categoryToComp %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ category.name }}</td>
+          <td>{{ category.getYear }}</td>
+          <td>
+            <div class="text-nowrap">
+              <a class="btn btn-primary" href="{% url 'comps:deleteCategory' compId=comp.id categoryId=category.id %}">smazat</a>
+              <a class="btn btn-primary" href="#"
+                 onclick="editCategory('{{ category.id }}', '{{ category.name }}', '{{ category.year_from }}', '{{ category.year_to }}')">upravit</a>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+  <script>
+      function editCategory(ids, name, year_from, year_to) {
+          $('#edit').val(ids);
+          $('#name').val(name);
+          $('#year_from').val(year_from);
+          $('#year_to').val(year_to);
+      }
+  </script>
+{% endblock %}

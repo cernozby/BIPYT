@@ -1,3 +1,4 @@
+import django
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib.auth.models import User
@@ -11,7 +12,7 @@ def newRacer(request):
         try:
             racer = Racer()
             if request.POST['edit'] is '0':
-                racer.newRacer(request.POST['first_name'], request.POST['last_name'], request.POST['born'])
+                racer.newRacer(request)
                 messages.add_message(request, messages.INFO, 'Závodník byl úspěšně přidán!', 'fmgShort alert-success')
                 message = 'Závodník byl úspěšně přidán!'
             else:
