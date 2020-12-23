@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+      {% for comp in comps %}
+        <a href="{% url 'comps:listOfRegistrate' compId=comp.id %}" class="btn btn-primary">{{ comp.name }}</a>
+      {% endfor %}
+  </div>
+{% endblock %}

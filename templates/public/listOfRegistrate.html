@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+      {% for category in categories %}
+        <table class="table table-striped text-left table-responsive-md">
+          <thead>
+          <tr>
+            <th colspan="10">{{ category.name }}</th>
+          </tr>
+          <tr>
+            <th>Jméno</th>
+            <th>rok narození</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          {% for registration in category|getRacersByCategory %}
+            <tr>
+              <td>{{ registration.racer }}</td>
+              <td>{{ registration.racer.born }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+        <a href="{% url 'comps:startersPdf' categoryId=category.id %}" target="_blank" class="btn btn-primary">Generovat Startovku</a>
+        <br><br>
+      {% endfor %}
+  </div>
+{% endblock %}

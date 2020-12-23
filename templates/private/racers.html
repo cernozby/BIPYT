@@ -6,11 +6,21 @@
       {% csrf_token %}
         <div class="form-row">
           <label for="inputEmail3" class="col-md-2 col-form-label"><h5>Závodník:</h5></label>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <input class="form-control" type="text" name="first_name" id="first_name" placeholder="Jméno"/>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <input class="form-control" type="text" name="last_name" id="last_name" placeholder="Přijmení">
+          </div>
+          <div class="col-md-2">
+            <input class="form-control" type="text" name="club" id="club" placeholder="Oddíl">
+          </div>
+          <div class="col-md-2">
+            <select id="sex" class="form-control" name="sex" required>
+               <option value="" disabled selected>pohlaví</option>
+              <option value="male">chlapci / muži</option>
+              <option value="female">dívky / ženy </option>
+            </select>
           </div>
           <div class="col-md-2">
             <input class="form-control" type="number" name="born"  id ="born" placeholder="rok narození">
@@ -27,8 +37,10 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Jméno</th>
-          <th>Rok narození</th>
+          <th>jméno</th>
+          <th>oddil</th>
+          <th>pohlaví</th>
+          <th>rok narození</th>
           <th style="width: 200px">akce</th>
         </tr>
       </thead>
@@ -37,10 +49,15 @@
         <tr>
           <td>{{ forloop.counter }}</td>
           <td>{{ racer }}</td>
+          <td>{{ racer.club }}</td>
+          <td>{{ racer.sex }}</td>
           <td>{{ racer.born }}</td>
-          <td >
-            <a class="btn btn-primary" href="{% url 'polls:deleteRacer' ids=racer.id %}">smazat</a>
-            <a class="btn btn-primary" href="#" onclick="editRacer('{{ racer.id }}' , '{{ racer.first_name}}', '{{ racer.last_name}}', '{{  racer.born }}')">upravit</a>
+          <td>
+            <div class="text-nowrap">
+              <a class="btn btn-primary" href="{% url 'polls:deleteRacer' ids=racer.id %}">smazat</a>
+              <a class="btn btn-primary" href="#" onclick="editRacer('{{ racer.id }}' , '{{ racer.first_name}}', '{{ racer.last_name}}', '{{  racer.born }}', '{{ racer.club }}', '{{ racer.sex }}')">upravit</a>
+              <a href="{% url 'comps:registration' racerId=racer.id %}" class="btn btn-primary">registrace</a>
+            </div>
           </td>
         </tr>
      {% endfor %}
@@ -49,9 +66,11 @@
    </div>
 
   <script>
-    function editRacer(ids, first_name, last_name, born) {
+    function editRacer(ids, first_name, last_name, born, club, sex) {
         $('#first_name').val(first_name);
         $('#last_name').val(last_name);
+        $('#sex').val(sex);
+        $('#club').val(club);
         $('#born').val(born);
         $('#edit').val(ids);
     }

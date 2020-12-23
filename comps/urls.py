@@ -12,5 +12,10 @@ urlpatterns = [
     path('administrace/kategorie/<int:ids>', views.categoryView, name='categoryView'),
     path('newCategory/<int:ids>', views.NewCategory, name='newCategory'),
     path('deleteCategory/<int:compId>/<int:categoryId>', views.deleteCategory, name='deleteCategory'),
+    path('administrace/moji-zavodnici/registrace/<int:racerId>', views.registrationView, name='registration'),
+    path('changeRegistration/<int:categoryId>/<int:racerId>', views.changeRegistration, name='changeRegistration'),
+    path('seznam-prihlasenych', views.listOfCompWithRegistrateList, name='listOfComps'),
+    path('seznam-prihlasenych/<int:compId>', views.listOfRegistrate, name='listOfRegistrate'),
+    path('startovni-listina/<int:categoryId>', views.getStartsList, name='startersPdf'),
 
 ]

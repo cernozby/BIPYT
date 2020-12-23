@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>Title</title>
+        <style type="text/css">
+            body {
+                font-weight: 200;
+                font-size: 14px;
+            }
+
+            .results {
+                border-collapse: collapse;
+                border: 1px solid black;
+
+            }
+
+            .results .border-top th {
+                text-align: left;
+            }
+
+            .results tr {
+                width: 330px;
+
+            }
+
+            .results td, .results th{
+                padding-top: 5px;
+                padding-left: 5px;
+            }
+
+            .div-center {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .print-time {
+                text-align: right;
+                padding-top: 10px;
+            }
+
+        </style>
+    </head>
+    <body>
+         <h2 class="div-center">Startovní listina</h2>
+         <table class="results">
+          <thead>
+          <tr>
+            <th colspan="4" align="left">{{ comp.name }}</th>
+          </tr>
+          <tr class="border-top">
+            <th style="width: 30px">#</th>
+            <th>jméno</th>
+            <th>oddíl</th>
+            <th>rok narození</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for racer in racers %}
+            <tr>
+              <td>{{ forloop.counter }}.</td>
+              <td>{{ racer }}</td>
+              <td>{{ racer.club }}</td>
+              <td>{{ racer.born }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+            <div class="print-time">Tisk: {{ printTime }} </div>
+    </body>
+</html>

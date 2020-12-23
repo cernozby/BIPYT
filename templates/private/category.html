@@ -10,10 +10,17 @@
         <div class="col-md-3">
           <input class="form-control" type="text" name="name" id="name" placeholder="Jméno" required/>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+          <select id="sex" class="form-control" name="sex" required>
+             <option value="" disabled selected>pohlaví</option>
+            <option value="male">chlapci / muži</option>
+            <option value="female">dívky / ženy </option>
+          </select>
+        </div>
+        <div class="col-md-2">
           <input class="form-control" type="number" name="year_from" id="year_from" placeholder="nejmladší (rok)" required>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <input class="form-control" type="number" name="year_to" id="year_to" placeholder="nejstarší(rok)" required>
         </div>
         <div class="col-md-1">
@@ -30,6 +37,7 @@
       <tr>
         <th>#</th>
         <th>kategorie</th>
+        <th>pohlaví</th>
         <th>ročník</th>
         <th style="width: 200px">akce</th>
       </tr>
@@ -39,12 +47,13 @@
         <tr>
           <td>{{ forloop.counter }}</td>
           <td>{{ category.name }}</td>
+          <td>{{ category.sex }}</td>
           <td>{{ category.getYear }}</td>
           <td>
             <div class="text-nowrap">
               <a class="btn btn-primary" href="{% url 'comps:deleteCategory' compId=comp.id categoryId=category.id %}">smazat</a>
               <a class="btn btn-primary" href="#"
-                 onclick="editCategory('{{ category.id }}', '{{ category.name }}', '{{ category.year_from }}', '{{ category.year_to }}')">upravit</a>
+                 onclick="editCategory('{{ category.id }}', '{{ category.name }}', '{{ category.year_from }}', '{{ category.year_to }}', '{{ category.sex }}')">upravit</a>
             </div>
           </td>
         </tr>
@@ -55,9 +64,10 @@
   </div>
 
   <script>
-      function editCategory(ids, name, year_from, year_to) {
+      function editCategory(ids, name, year_from, year_to, sex) {
           $('#edit').val(ids);
           $('#name').val(name);
+          $('#sex').val(sex);
           $('#year_from').val(year_from);
           $('#year_to').val(year_to);
       }

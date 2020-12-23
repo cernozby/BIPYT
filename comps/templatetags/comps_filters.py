@@ -1,6 +1,9 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 
+from comps.models import Category, Registration
+from polls import models
+
 register = template.Library()
 
 
@@ -26,3 +29,29 @@ def boolToWord(string):
     else:
         result = 'NE'
     return result
+
+@register.filter
+def getCategory(racer, compId):
+    categories = Category.objects.all().filter(comp_id=compId)
+
+    if racer and categories:
+        for category in categories:
+            if category.year_to <= racer.born <= category.year_from and racer.sex == category.sex:
+                return category
+
+    return None
+
+
+@register.filter
+def getRegistration(racer, compId):
+    return Registration.objects.all().filter(category=getCategory(racer=racer, compId=compId), racer=racer)
+
+
+@register.filter
+def getRacersByCategory(category):
+    return Registration.objects.all().filter(category=category.id)
+
+
+@register.simple_tag
+def setvar(val=None):
+  return val

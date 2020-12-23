@@ -20,6 +20,8 @@ def newRacer(request):
                 editRacer.first_name = request.POST['first_name']
                 editRacer.last_name = request.POST['last_name']
                 editRacer.born = request.POST['born']
+                editRacer.sex = request.POST['sex']
+                editRacer.club = request.POST['club']
                 editRacer.save()
                 message = 'Závodník byl úspěšně upraven!'
             messages.add_message(request, messages.INFO, message, 'fmgShort alert-success')
