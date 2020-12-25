@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+    {% if compId and categoryId %}
+      {% if comp.type == '0' %}
+          {% csrf_token %}
+            <table class="table table-striped text-left">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>jméno</th>
+                <th>oddil</th>
+                <th>rok narození</th>
+                <th>cesta 1</th>
+                <th>Q1</th>
+                <th>cesta 2</th>
+                <th>Q2</th>
+                <th>celkem</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for registration in registrations %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ registration.racer }}</td>
+                  <td>{{ registration.racer.club }}</td>
+                  <td>{{ registration.racer.born }}</td>
+                  <td>{{ registration.lead_route_1 }}</td>
+                  <td> {% getPlace place registration.racer.id 'lead_route_1' %}</td>
+                  <td>{{ registration.lead_route_2 }}</td>
+                  <td>{% getPlace place registration.racer.id 'lead_route_2' %}</td>
+                  <td>{% getPlace place registration.racer.id 'Q' %}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+            <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+      {% elif  comp.type == '1' %}
+
+      {% elif comp.type == '2' %}
+
+      {% endif %}
+
+    {% elif compId %}
+
+      {% for cat in categories %}
+        <a href="{% url 'comps:getResults_2' compId=compId categoryId=cat.id %}"
+           class="btn btn-primary">{{ cat.name }}</a>
+      {% endfor %}
+
+    {% else %}
+
+      {% for comp in comps %}
+        <a href="{% url 'comps:getResults_1' compId=comp.id %}" class="btn btn-primary">{{ comp.name }}</a>
+      {% endfor %}
+
+    {% endif %}
+  </div>
+{% endblock %}

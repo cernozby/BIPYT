@@ -13,7 +13,6 @@ class Racer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
 
     def newRacer(self, rq):
-        print(User)
         if rq.POST['first_name'] is None or rq.POST['last_name'] is None or rq.POST['born'] is None or not rq.POST['born'].isnumeric():
             raise Exception('newRacer: Argument can\'t be null')
 
@@ -25,13 +24,3 @@ class Racer(models.Model):
         return self.first_name + ' ' + self.last_name
 
 
-
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)

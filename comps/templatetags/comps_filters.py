@@ -51,6 +51,10 @@ def getRegistration(racer, compId):
 def getRacersByCategory(category):
     return Registration.objects.all().filter(category=category.id)
 
+@register.simple_tag
+def getPlace(array, ids: str, key: str):
+    return array[ids][key]
+
 
 @register.simple_tag
 def setvar(val=None):

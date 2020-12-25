@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .models import *
+from comps.models import *
 
 
 def newRacer(request):
@@ -42,7 +43,12 @@ def deleteRacer(request, ids):
 
 
 def HomepageDefaultView(request):
-    return render(request, 'public/homepage.html')
+    return render(request, 'public/homepage.html', dict(compPrecomp=Comps.objects.filter(state='precomp'),
+                                                        compRunning=Comps.objects.filter(state='running'),
+                                                        compEnd=Comps.objects.filter(state='end'),
+                                                        result_system_dict=Comps().getDictResultSystem(),
+                                                        comp_type_dict=Comps().getDictCompType(),
+                                                        state_dict=Comps().getDictState()))
 
 
 def LoginView(request):
@@ -67,7 +73,10 @@ def CompetitorsView(request):
         messages.add_message(request, messages.INFO, 'Neoprávnění přístup', 'fmgShort alert-danger')
         return render(request, 'public/homepage.html')
     else:
-        return render(request, 'private/racers.html', dict(racers=Racer.objects.all()))
+        if request.user.is_superuser:
+            return render(request, 'private/racers.html', dict(racers=Racer.objects.all()))
+        else:
+            return render(request, 'private/racers.html', dict(racers=Racer.objects.filter(user=request.user)))
 
 
 def RegistrationVIew(request):

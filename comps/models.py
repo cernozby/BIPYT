@@ -1,4 +1,5 @@
 import io
+import math
 from time import strftime, gmtime
 
 from django.contrib.auth.models import User
@@ -10,6 +11,7 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from polls import models as polls_models
+from collections import OrderedDict
 
 
 class Comps(models.Model):
@@ -32,7 +34,7 @@ class Comps(models.Model):
         return {0: 'obtížnost', 1: 'boulder', 2: 'rychlost'}
 
     def getDictState(self):
-        return {'prepare': 'příprava', 'precomp': 'registrace', 'running' : 'probíhá'}
+        return {'prepare': 'příprava', 'precomp': 'registrace', 'running': 'probíhá'}
 
     def newComp(self, rq):
         Comps.objects.create(name=rq.POST['name'],
@@ -98,14 +100,15 @@ class Registration(models.Model):
     racer = models.ForeignKey(polls_models.Racer, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
-    #lead results
+    # view final
+    final = models.CharField(max_length=4, default=0, null=False)
+
+    # lead results
     lead_route_1 = models.CharField(max_length=10, default=None, null=True)
     lead_route_2 = models.CharField(max_length=10, default=None, null=True)
-    lead_route_3 = models.CharField(max_length=10, default=None, null=True)
-    lead_route_4 = models.CharField(max_length=10, default=None, null=True)
     lead_route_final = models.CharField(max_length=10, default=None, null=True)
 
-    #boulderResult
+    # boulderResult
     boulder_1_zone = models.CharField(max_length=10, default=None, null=True)
     boulder_1_top = models.CharField(max_length=10, default=None, null=True)
     boulder_2_zone = models.CharField(max_length=10, default=None, null=True)
@@ -128,16 +131,85 @@ class Registration(models.Model):
     boulder_4_zone_final = models.CharField(max_length=10, default=None, null=True)
     boulder_4_top_final = models.CharField(max_length=10, default=None, null=True)
 
-    #speed result
+    # speed result
     speeed_1 = models.CharField(max_length=10, default=None, null=True)
     speeed_2 = models.CharField(max_length=10, default=None, null=True)
     speeed_3 = models.CharField(max_length=10, default=None, null=True)
     speeed_4 = models.CharField(max_length=10, default=None, null=True)
 
+    def getPlace(self, data):
+        result = {}
+        i = 1
+        beforeItem = []
+        beforeKey = []
+        sum = 0
+        for key, item in data:
+            if i > 1:
+                if item != beforeItem[-1]:
+                    listKey = 0
+                    for k in beforeKey:
+                        result[k] = float(sum / len(beforeKey))
+                        listKey = listKey + 1
+                    beforeItem = []
+                    beforeKey = []
+                    sum = 0
+                beforeKey.append(key)
+                beforeItem.append(item)
+                sum = sum + i
+                i = i + 1
+            else:
+                beforeKey.append(key)
+                beforeItem.append(item)
+                sum = sum + i
+                i = i + 1
 
+            listKey = 0
+            for k in beforeKey:
+                result[k] = sum / len(beforeKey)
+                listKey = listKey + 1
+        return result
 
+    def getLeadResult(self, data):
+        dataSort = sorted(data.items(), key=lambda x: x[1], reverse=True)
+        return self.getPlace(dataSort)
 
+    def getResults(self, categoryId):
+        reg1 = {}
+        reg2 = {}
+        result = {}
 
+        registrations = Registration.objects.filter(category_id=categoryId)
+        for r in registrations:
+            if r.lead_route_1 == '0' or r.lead_route_1 is None:
+                reg1[r.racer.id] = -1
+            else:
+                reg1[r.racer.id] = int(r.lead_route_1)
+
+            if r.lead_route_2 == '0' or r.lead_route_2 is None:
+                reg2[r.racer.id] = -1
+            else:
+                reg2[r.racer.id] = int(r.lead_route_2)
+
+        reg1 = self.getLeadResult(reg1)
+        reg2 = self.getLeadResult(reg2)
+
+        for r in registrations:
+            result[r.racer_id] = {'lead_route_1': reg1[r.racer_id],
+                                  'lead_route_2': reg2[r.racer_id],
+                                  'Q': round(math.sqrt(reg2[r.racer_id] * reg1[r.racer_id]), 2)}
+
+        return result
+
+    def saveResultPair(self, value: str, key: str):
+        registrationId = key.split('_')[-1]
+        keyToValue = key.replace('__' + registrationId, '')
+        Registration.objects.filter(id=registrationId).update(**{keyToValue: value})
+
+    def changeResult(self, request):
+        for key, value in request.POST.dict().items():
+            if key == 'csrfmiddlewaretoken':
+                continue
+            self.saveResultPair(value, key)
 
 
 def getStartersPdf(categoryId):
@@ -154,6 +226,3 @@ def getStartersPdf(categoryId):
     if not pdf.err:
         return HttpResponse(result.getvalue(), content_type='application/pdf')
     return None
-
-
-

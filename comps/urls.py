@@ -16,6 +16,13 @@ urlpatterns = [
     path('changeRegistration/<int:categoryId>/<int:racerId>', views.changeRegistration, name='changeRegistration'),
     path('seznam-prihlasenych', views.listOfCompWithRegistrateList, name='listOfComps'),
     path('seznam-prihlasenych/<int:compId>', views.listOfRegistrate, name='listOfRegistrate'),
+    path('zadani-vysledku/<int:compId>/<int:categoryId>', views.changeResults, name='changeResult_2'),
+    path('zadani-vysledku/<int:compId>', views.changeResults, name='changeResult_1'),
+    path('zadani-vysledku', views.changeResults, name='changeResult_0'),
+    path('vysledky/<int:compId>/<int:categoryId>', views.getResults, name='getResults_2'),
+    path('vysledky/<int:compId>', views.getResults, name='getResults_1'),
+    path('vysledky', views.getResults, name='getResults_0'),
     path('startovni-listina/<int:categoryId>', views.getStartsList, name='startersPdf'),
+    path('saveChangeResults/<int:compId>/<int:categoryId>', views.saveChangeResults, name='saveChangeResults'),
 
 ]

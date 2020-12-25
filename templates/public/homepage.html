@@ -1,4 +1,121 @@
 {% extends 'base.html' %}
+{% load comps_filters %}
 {% block content %}
-sadasdas
+  <div class="container text-center container-padding-top">
+
+    <h3>nadcházející závody</h3>
+    <br>
+    <table class="table table-striped text-left table-responsive-md">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Jméno</th>
+        <th>Dataum konání</th>
+        <th>typ</th>
+        <th>věkový rozptyl</th>
+        <th>systém výsledků</th>
+        <th>stav</th>
+        <th>finále</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for comp in compPrecomp %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ comp.name }}</td>
+          <td>
+            {% if comp.start_date == comp.end_date %}
+              {{ comp.start_date|date:"j. n. Y" }}
+            {% else %}
+              {{ comp.start_date|date:"j. n. Y" }} - {{ comp.end_date|date:"j. n. Y" }}
+            {% endif %}
+          </td>
+          <td>{{ comp_type_dict|get_item:comp.type }}</td>
+          <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
+          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
+          <td>{{ state_dict|get_item_string_key:comp.state }}</td>
+          <td>{{ comp.is_final|boolToWord }}</td>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <br><br>
+
+  <h3>probíhající závody</h3>
+  <br>
+  <table class="table table-striped text-left table-responsive-md">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Jméno</th>
+        <th>Dataum konání</th>
+        <th>typ</th>
+        <th>věkový rozptyl</th>
+        <th>systém výsledků</th>
+        <th>stav</th>
+        <th>finále</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for comp in compRunning %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ comp.name }}</td>
+          <td>
+            {% if comp.start_date == comp.end_date %}
+              {{ comp.start_date|date:"j. n. Y" }}
+            {% else %}
+              {{ comp.start_date|date:"j. n. Y" }} - {{ comp.end_date|date:"j. n. Y" }}
+            {% endif %}
+          </td>
+          <td>{{ comp_type_dict|get_item:comp.type }}</td>
+          <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
+          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
+          <td>{{ state_dict|get_item_string_key:comp.state }}</td>
+          <td>{{ comp.is_final|boolToWord }}</td>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  <br><br>
+  <h3>proběhlé závody</h3>
+  <br>
+  <table class="table table-striped text-left table-responsive-md">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Jméno</th>
+        <th>Dataum konání</th>
+        <th>typ</th>
+        <th>věkový rozptyl</th>
+        <th>systém výsledků</th>
+        <th>stav</th>
+        <th>finále</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for comp in compEnd %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ comp.name }}</td>
+          <td>
+            {% if comp.start_date == comp.end_date %}
+              {{ comp.start_date|date:"j. n. Y" }}
+            {% else %}
+              {{ comp.start_date|date:"j. n. Y" }} - {{ comp.end_date|date:"j. n. Y" }}
+            {% endif %}
+          </td>
+          <td>{{ comp_type_dict|get_item:comp.type }}</td>
+          <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
+          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
+          <td>{{ state_dict|get_item_string_key:comp.state }}</td>
+          <td>{{ comp.is_final|boolToWord }}</td>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

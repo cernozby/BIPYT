@@ -35,7 +35,7 @@ def NewComp(request):
 
 
 def CompsView(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_superuser:
         messages.add_message(request, messages.INFO, 'Neoprávnění přístup', 'fmgShort alert-danger')
         return render(request, 'public/homepage.html')
     return render(request, 'private/comps.html', dict(comps=Comps.objects.all(),
@@ -57,7 +57,7 @@ def deleteComp(request, ids):
 # --------------------------category------------------------------
 
 def categoryView(request, ids):
-    if not request.user.is_authenticated:
+    if not request.user.is_superuser:
         messages.add_message(request, messages.INFO, 'Neoprávnění přístup', 'fmgShort alert-danger')
         return render(request, 'public/homepage.html')
     return render(request, 'private/category.html',
@@ -130,7 +130,7 @@ def changeRegistration(request, categoryId, racerId):
 
 def listOfCompWithRegistrateList(request):
     categories = Category.objects.all().filter()
-    comps = Comps.objects.all().filter(state='precomp')
+    comps = Comps.objects.all().filter(state__in=('precomp', 'running'))
     return render(request, 'public/listOfCompsWithRegistrate.html', dict(comps=comps))
 
 
@@ -143,3 +143,49 @@ def getStartsList(request, categoryId):
     pdf = getStartersPdf(categoryId)
     return HttpResponse(pdf, content_type='application/pdf')
 
+
+
+def changeResults(request, compId=None, categoryId=None):
+    dictToRender = dict(compId=compId, categoryId=categoryId)
+    if compId and categoryId:
+        dictToRender['category'] = Category.objects.get(id=categoryId)
+        dictToRender['comp'] = Comps.objects.get(id=compId)
+        dictToRender['registrations'] = Registration.objects.filter(category_id=categoryId, )
+    elif compId:
+        dictToRender['categories'] = Category.objects.filter(comp_id=compId)
+        dictToRender['comp'] = Comps.objects.get(id=compId)
+    else:
+        dictToRender['comps'] = Comps.objects.filter(state='running')
+    return render(request, 'private/changeResults.html', dictToRender)
+
+
+def saveChangeResults(request, compId, categoryId):
+    registration = Registration()
+    registration.changeResult(request)
+    return HttpResponseRedirect('/zadani-vysledku/' + str(compId) + '/' + str(categoryId))
+
+def getResults(request, compId=None, categoryId=None):
+    dictToRender = dict(compId=compId, categoryId=categoryId)
+    if compId and categoryId:
+        registration = Registration()
+
+        dictToRender['category'] = Category.objects.get(id=categoryId)
+        dictToRender['comp'] = Comps.objects.get(id=compId)
+        dictToRender['registrations'] = Registration.objects.filter(category_id=categoryId, )
+        dictToRender['results'] = 1
+        dictToRender['place'] = registration.getResults(categoryId)
+
+
+    elif compId:
+        dictToRender['categories'] = Category.objects.filter(comp_id=compId)
+        dictToRender['comp'] = Comps.objects.get(id=compId)
+    else:
+        comps = Comps.objects.filter(state='running')
+        dictToRender['comps'] = Comps.objects.filter(state='running')
+        if comps.count() == 1:
+            for comp in comps:
+                dictToRender['compId'] = comp.id
+                dictToRender['categories'] = Category.objects.filter(comp_id=comp.id)
+                dictToRender['comp'] = Comps.objects.get(id=comp.id)
+
+    return render(request, 'public/results.html', dictToRender)

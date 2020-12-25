@@ -2,7 +2,7 @@
 {% block content %}
   <div class="container text-center container-padding-top">
 
-    <form method="post" action="/newRacer/ {{ ids }}">
+    <form method="post" action="/newRacer/ {{ ids }}" >
       {% csrf_token %}
         <div class="form-row">
           <label for="inputEmail3" class="col-md-2 col-form-label"><h5>Závodník:</h5></label>
@@ -33,7 +33,7 @@
     </form>
 
     <br><br>
-    <table class="table table-striped text-left">
+    <table class="table table-striped text-left" style="background: white;">
       <thead>
         <tr>
           <th>#</th>

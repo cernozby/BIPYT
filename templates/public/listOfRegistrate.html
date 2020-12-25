@@ -25,7 +25,9 @@
           </tbody>
         </table>
 
-        <a href="{% url 'comps:startersPdf' categoryId=category.id %}" target="_blank" class="btn btn-primary">Generovat Startovku</a>
+        {% if user.is_superuser %}
+          <a href="{% url 'comps:startersPdf' categoryId=category.id %}" target="_blank" class="btn btn-primary">Generovat Startovku</a>
+        {% endif %}
         <br><br>
       {% endfor %}
   </div>

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+    {% if compId and categoryId %}
+      {% if comp.type == '0' %}
+        <form method="post" action="{% url 'comps:saveChangeResults' compId=compId categoryId=categoryId %}">
+          {% csrf_token %}
+            <table class="table table-striped text-left">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>jméno</th>
+                <th>oddil</th>
+                <th>rok narození</th>
+                <th>cesta 1</th>
+                <th>cesta 2</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for registration in registrations %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ registration.racer }}</td>
+                  <td>{{ registration.racer.club }}</td>
+                  <td>{{ registration.racer.born }}</td>
+                  <td><input name="lead_route_1__{{ registration.id  }}" type="number" value="{{ registration.lead_route_1 }}" style="width: 100px"></td>
+                  <td><input name="lead_route_2__{{ registration.id  }}" type="number" value="{{ registration.lead_route_2 }}" style="width: 100px"/></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+            <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+        </form>
+      {% elif  comp.type == '1' %}
+
+      {% elif comp.type == '2' %}
+
+      {% endif %}
+
+    {% elif compId %}
+
+      {% for cat in categories %}
+        <a href="{% url 'comps:changeResult_2' compId=compId categoryId=cat.id %}"
+           class="btn btn-primary">{{ cat.name }}</a>
+      {% endfor %}
+
+    {% else %}
+
+      {% for comp in comps %}
+        <a href="{% url 'comps:changeResult_1' compId=comp.id %}" class="btn btn-primary">{{ comp.name }}</a>
+      {% endfor %}
+
+    {% endif %}
+  </div>
+{% endblock %}
