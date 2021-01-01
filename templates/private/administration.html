@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
   <div class="container text-center container-padding-top">
-    <a href="administrace/moji-zavodnici" class="btn btn-primary">Moji závodníci</a>
+    <a href="administrace/moji-zavodnici" class="btn btn-primary">moji závodníci</a>
     {% if user.is_superuser %}
-      <a href="administrace/zavody" class="btn btn-primary"> zavody</a>
-      <a href="{% url 'comps:changeResult_0' %}" class="btn btn-primary">zadat vysledky</a>
+      <a href="administrace/zavody" class="btn btn-primary"> závody</a>
+      <a href="{% url 'comps:changeResult_0' %}" class="btn btn-primary">zadat výsledky</a>
+      <a href="{% url 'comps:users' %}" class="btn btn-primary">správa uživatelů</a>
     {% endif %}
    </div>
 {% endblock %}

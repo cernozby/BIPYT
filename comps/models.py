@@ -34,7 +34,7 @@ class Comps(models.Model):
         return {0: 'obtížnost', 1: 'boulder', 2: 'rychlost'}
 
     def getDictState(self):
-        return {'prepare': 'příprava', 'precomp': 'registrace', 'running': 'probíhá'}
+        return {'prepare': 'příprava', 'precomp': 'registrace', 'running': 'probíhá', 'end': 'ukončen'}
 
     def newComp(self, rq):
         Comps.objects.create(name=rq.POST['name'],
@@ -169,6 +169,51 @@ class Registration(models.Model):
                 listKey = listKey + 1
         return result
 
+    def getPlace(self, data, ResultType="classic"):
+        result = {}
+        i = 1
+        beforeItem = []
+        beforeKey = []
+        sum = 0
+        for key, item in data:
+            if i > 1:
+                if item != beforeItem[-1]:
+                    listKey = 0
+                    for k in beforeKey:
+                        if ResultType == 'classic':
+                            result[k] = float(sum / len(beforeKey))
+                        else:
+                            if len(beforeKey) == 1:
+                                result[k] = str(i-1) + '.'
+                            else:
+                                result[k] = str(i-len(beforeKey)) + '. - ' + str(i-1) + '.'
+
+                        listKey = listKey + 1
+                    beforeItem = []
+                    beforeKey = []
+                    sum = 0
+                beforeKey.append(key)
+                beforeItem.append(item)
+                sum = sum + i
+                i = i + 1
+            else:
+                beforeKey.append(key)
+                beforeItem.append(item)
+                sum = sum + i
+                i = i + 1
+
+            listKey = 0
+            for k in beforeKey:
+                if ResultType == 'classic':
+                    result[k] = sum / len(beforeKey)
+                else:
+                    if len(beforeKey) == 1:
+                        result[k] = str(i-1) + '.'
+                    else:
+                        result[k] = str(i - len(beforeKey)) + '. - ' + str(i-1) + '.'
+                listKey = listKey + 1
+        return result
+
     def getLeadResult(self, data):
         dataSort = sorted(data.items(), key=lambda x: x[1], reverse=True)
         return self.getPlace(dataSort)
@@ -176,6 +221,7 @@ class Registration(models.Model):
     def getResults(self, categoryId):
         reg1 = {}
         reg2 = {}
+        qSum = {}
         result = {}
 
         registrations = Registration.objects.filter(category_id=categoryId)
@@ -193,10 +239,18 @@ class Registration(models.Model):
         reg1 = self.getLeadResult(reg1)
         reg2 = self.getLeadResult(reg2)
 
+        for x in registrations:
+            qSum[x.racer.id] = round(math.sqrt(reg2[x.racer_id] * reg1[x.racer_id]), 2)
+       
+        qSum = self.getPlace(sorted(qSum.items(), key=lambda w: w[1], reverse=False), 'Place')
+
+
         for r in registrations:
             result[r.racer_id] = {'lead_route_1': reg1[r.racer_id],
                                   'lead_route_2': reg2[r.racer_id],
-                                  'Q': round(math.sqrt(reg2[r.racer_id] * reg1[r.racer_id]), 2)}
+                                  'Q': round(math.sqrt(reg2[r.racer_id] * reg1[r.racer_id]), 2),
+                                  'qSum': qSum[r.racer_id]}
+
 
         return result
 
@@ -220,6 +274,24 @@ def getStartersPdf(categoryId):
     }
 
     template = get_template('pdf/startersPdf.html')
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+def getResultToPdf(categoryId):
+    registration = Registration()
+    context_dict = {
+        'comp': Category.objects.get(id=categoryId).comp,
+        'printTime': strftime("%d. %m. %Y %H:%M:%S", gmtime()),
+        'registrations': Registration.objects.filter(category_id=categoryId),
+        'place': registration.getResults(categoryId)
+    }
+
+    template = get_template('pdf/leadResultsPdf.html')
     html = template.render(context_dict)
     result = BytesIO()
     pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)

@@ -23,6 +23,10 @@ urlpatterns = [
     path('vysledky/<int:compId>', views.getResults, name='getResults_1'),
     path('vysledky', views.getResults, name='getResults_0'),
     path('startovni-listina/<int:categoryId>', views.getStartsList, name='startersPdf'),
+    path('administrace-uzivatelu', views.usersView, name='users'),
+    path('deleteUser/<email>', views.deleteUser, name='deleteUser'),
+
+    path('vysledky-pdf/<int:categoryId>', views.getResultPdf, name='resultPdf'),
     path('saveChangeResults/<int:compId>/<int:categoryId>', views.saveChangeResults, name='saveChangeResults'),
 
 ]

@@ -22,13 +22,13 @@
               <tbody>
               {% for registration in registrations %}
                 <tr>
-                  <td>{{ forloop.counter }}</td>
+                  <td>{% getPlace place registration.racer.id 'qSum' %}</td>
                   <td>{{ registration.racer }}</td>
                   <td>{{ registration.racer.club }}</td>
                   <td>{{ registration.racer.born }}</td>
-                  <td>{{ registration.lead_route_1 }}</td>
+                  <td>{{ registration.lead_route_1|NoneToDash}}</td>
                   <td> {% getPlace place registration.racer.id 'lead_route_1' %}</td>
-                  <td>{{ registration.lead_route_2 }}</td>
+                  <td>{{ registration.lead_route_2|NoneToDash }}</td>
                   <td>{% getPlace place registration.racer.id 'lead_route_2' %}</td>
                   <td>{% getPlace place registration.racer.id 'Q' %}</td>
                 </tr>
@@ -36,7 +36,7 @@
               </tbody>
             </table>
 
-            <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+
       {% elif  comp.type == '1' %}
 
       {% elif comp.type == '2' %}

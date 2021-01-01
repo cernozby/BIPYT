@@ -104,8 +104,6 @@ def registrationView(request, racerId):
                   dict(comps=Comps.objects.all().filter(state='precomp'), comp_type_dict=Comps().getDictCompType(),
                        registration=Registration, racer=models.Racer.objects.get(id=racerId))
                   )
-
-
 def changeRegistration(request, categoryId, racerId):
     message = 'Operace se nepovedla!'
     type = 'alert-success'
@@ -125,6 +123,23 @@ def changeRegistration(request, categoryId, racerId):
     messages.add_message(request, messages.INFO, message, 'fmgShort ' + type)
     return HttpResponseRedirect('/administrace/moji-zavodnici/registrace/' + str(racerId))
 
+# --------------------------Users------------------------------
+
+def usersView(request):
+    if not User.is_superuser:
+        messages.add_message(request, messages.INFO, 'Neoprávnění přístup', 'fmgShort alert-danger')
+        return render(request, 'public/homepage.html')
+    return render(request, 'private/users.html', dict(users=User.objects.filter(is_superuser=0)))
+
+def deleteUser(request, email):
+    try:
+        user = User.objects.filter(email=email)
+        user.delete()
+    except:
+        messages.add_message(request, messages.INFO, 'smazani uzivatele se nepovedlo', 'fmgShort ', 'danger')
+
+    messages.add_message(request, messages.INFO, 'uživatel byl úspěšně smazán', 'fmgShort ', 'success')
+    return HttpResponseRedirect('/administrace-uzivatelu')
 
 # --------------------------listOfCompWithpublicRegistarteList------------------------------
 
@@ -141,6 +156,10 @@ def listOfRegistrate(request, compId):
 # --------------------------listOfCompWithpublicRegistarteList------------------------------
 def getStartsList(request, categoryId):
     pdf = getStartersPdf(categoryId)
+    return HttpResponse(pdf, content_type='application/pdf')
+
+def getResultPdf(request, categoryId):
+    pdf = getResultToPdf(categoryId)
     return HttpResponse(pdf, content_type='application/pdf')
 
 
@@ -172,7 +191,6 @@ def getResults(request, compId=None, categoryId=None):
         dictToRender['category'] = Category.objects.get(id=categoryId)
         dictToRender['comp'] = Comps.objects.get(id=compId)
         dictToRender['registrations'] = Registration.objects.filter(category_id=categoryId, )
-        dictToRender['results'] = 1
         dictToRender['place'] = registration.getResults(categoryId)
 
 

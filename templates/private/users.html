@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load comps_filters %}
+{% block content %}
+  <div class="container text-center container-padding-top">
+    <table class="table table-striped text-left table-responsive-md">
+      <thead>
+      <tr>
+         <th>#</th>
+         <th>uživatel</th>
+         <th>akce</th>
+      </tr>
+      </thead>
+      <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ user }}</td>
+              <td><a class="btn btn-primary" href="{% url 'comps:deleteUser' user %}">smazat</a></td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
+{% endblock %}

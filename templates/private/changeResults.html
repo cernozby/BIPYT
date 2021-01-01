@@ -30,8 +30,10 @@
               {% endfor %}
               </tbody>
             </table>
-
-            <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+            <div>
+              <a href="{% url 'comps:resultPdf' categoryId %}" class="btn btn-primary">Tisk do pdf</a>
+              <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+            </div>
         </form>
       {% elif  comp.type == '1' %}
 

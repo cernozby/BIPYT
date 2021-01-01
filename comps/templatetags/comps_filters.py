@@ -15,6 +15,13 @@ def get_item(dictionary, key):
 
 
 @register.filter
+def NoneToDash(item):
+    if item is None:
+        return '-'
+    return item
+
+
+@register.filter
 def get_item_string_key(dictionary, key):
     if key is None:
         return '-'
@@ -29,6 +36,7 @@ def boolToWord(string):
     else:
         result = 'NE'
     return result
+
 
 @register.filter
 def getCategory(racer, compId):
@@ -51,6 +59,7 @@ def getRegistration(racer, compId):
 def getRacersByCategory(category):
     return Registration.objects.all().filter(category=category.id)
 
+
 @register.simple_tag
 def getPlace(array, ids: str, key: str):
     return array[ids][key]
@@ -58,4 +67,4 @@ def getPlace(array, ids: str, key: str):
 
 @register.simple_tag
 def setvar(val=None):
-  return val
+    return val
