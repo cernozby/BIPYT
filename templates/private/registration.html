@@ -10,7 +10,6 @@
         <th>jméno</th>
         <th>dataum konání</th>
         <th>typ</th>
-        <th>finále</th>
         <th>moje kategorie</th>
         <th style="width: 200px">akce</th>
       </tr>
@@ -32,7 +31,6 @@
             {% endif %}
           </td>
           <td>{{ comp_type_dict|get_item:comp.type }}</td>
-          <td>{{ comp.is_final|boolToWord }}</td>
           <td>
             {%  if category %}
               {{ category.name }}
@@ -61,16 +59,13 @@
   </div>
 
     <script>
-    function editComp(ids, name, type, start_date, end_date, is_final, min_age, max_age, result_system, city, address, state) {
+    function editComp(ids, name, type, start_date, end_date, min_age, max_age, city, address, state) {
         $('#name').val(name);
         $('#type').val(type);
         $('#start_date').val(start_date);
         $('#end_date').val(end_date);
-        $('#is_final').val(parseInt(is_final)).change();
         $('#min_age').val(min_age);
         $('#max_age').val(max_age);
-        console.log(result_system);
-        $('#result_system').val(parseInt(result_system));
         $('#city').val(city);
         $('#address').val(address);
         $('#edit').val(ids);

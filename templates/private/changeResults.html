@@ -35,10 +35,94 @@
               <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
             </div>
         </form>
-      {% elif  comp.type == '1' %}
-
-      {% elif comp.type == '2' %}
-
+      {% elif  comp.type == '2' %}
+        <form method="post" action="{% url 'comps:saveChangeResults' compId=compId categoryId=categoryId %}">
+          {% csrf_token %}
+            <table class="table table-striped text-left">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>jméno</th>
+                <th>oddil</th>
+                <th>rok narození</th>
+                <th>pokus 1</th>
+                <th>pokus 2</th>
+                <th>pokus 3</th>
+                <th>pokus 4</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for registration in registrations %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ registration.racer }}</td>
+                  <td>{{ registration.racer.club }}</td>
+                  <td>{{ registration.racer.born }}</td>
+                  <td><input name="speed_1__{{ registration.id  }}" type="number" step="any" value="{{ registration.speed_1 }}" style="width: 100px"></td>
+                  <td><input name="speed_2__{{ registration.id  }}" type="number" step="any" value="{{ registration.speed_2 }}" style="width: 100px"/></td>
+                  <td><input name="speed_3__{{ registration.id  }}" type="number" step="any" value="{{ registration.speed_3 }}" style="width: 100px"/></td>
+                  <td><input name="speed_4__{{ registration.id  }}" type="number" step="any" value="{{ registration.speed_4 }}" style="width: 100px"/></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <div>
+              <a href="{% url 'comps:resultPdf' categoryId %}" class="btn btn-primary">Tisk do pdf</a>
+              <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+            </div>
+        </form>
+      {% elif comp.type == '1' %}
+ <form method="post" action="{% url 'comps:saveChangeResults' compId=compId categoryId=categoryId %}">
+          {% csrf_token %}
+            <table class="table table-striped text-left">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>jméno</th>
+                <th>oddil</th>
+                <th>rok narození</th>
+                <th>B1Z</th>
+                <th>B1T</th>
+                <th>B2Z</th>
+                <th>B2T</th>
+                <th>B3Z</th>
+                <th>B3T</th>
+                <th>B4Z</th>
+                <th>B4T</th>
+                <th>B5Z</th>
+                <th>B5T</th>
+                <th>B6Z</th>
+                <th>B6T</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for registration in registrations %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ registration.racer }}</td>
+                  <td>{{ registration.racer.club }}</td>
+                  <td>{{ registration.racer.born }}</td>
+                  <td><input name="boulder_1_zone__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_1_zone }}" style="width: 50px"></td>
+                  <td><input name="boulder_1_top__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_1_top }}" style="width: 50px"></td>
+                  <td><input name="boulder_2_zone__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_2_zone }}" style="width: 50px"></td>
+                  <td><input name="boulder_2_top__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_2_top }}" style="width: 50px"></td>
+                  <td><input name="boulder_3_zone__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_3_zone }}" style="width: 50px"></td>
+                  <td><input name="boulder_3_top__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_3_top }}" style="width: 50px"></td>
+                  <td><input name="boulder_4_zone__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_4_zone }}" style="width: 50px"></td>
+                  <td><input name="boulder_4_top__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_4_top }}" style="width: 50px"></td>
+                  <td><input name="boulder_5_zone__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_5_zone }}" style="width: 50px"></td>
+                  <td><input name="boulder_5_top__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_5_top }}" style="width: 50px"></td>
+                  <td><input name="boulder_6_zone__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_6_zone }}" style="width: 50px"></td>
+                  <td><input name="boulder_6_top__{{ registration.id  }}" type="number" step="any" value="{{ registration.boulder_6_top }}" style="width: 50px"></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <div>
+              <a href="{% url 'comps:resultPdf' categoryId %}" class="btn btn-primary">Tisk do pdf</a>
+              <input type="submit" class="btn btn-primary pull-right" value="Uložit"/>
+            </div>
+        </form>
       {% endif %}
 
     {% elif compId %}

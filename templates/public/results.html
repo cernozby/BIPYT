@@ -4,43 +4,115 @@
   <div class="container text-center container-padding-top">
     {% if compId and categoryId %}
       {% if comp.type == '0' %}
-          {% csrf_token %}
-            <table class="table table-striped text-left">
-              <thead>
-              <tr>
-                <th>#</th>
-                <th>jméno</th>
-                <th>oddil</th>
-                <th>rok narození</th>
-                <th>cesta 1</th>
-                <th>Q1</th>
-                <th>cesta 2</th>
-                <th>Q2</th>
-                <th>celkem</th>
-              </tr>
-              </thead>
-              <tbody>
-              {% for registration in registrations %}
-                <tr>
-                  <td>{% getPlace place registration.racer.id 'qSum' %}</td>
-                  <td>{{ registration.racer }}</td>
-                  <td>{{ registration.racer.club }}</td>
-                  <td>{{ registration.racer.born }}</td>
-                  <td>{{ registration.lead_route_1|NoneToDash}}</td>
-                  <td> {% getPlace place registration.racer.id 'lead_route_1' %}</td>
-                  <td>{{ registration.lead_route_2|NoneToDash }}</td>
-                  <td>{% getPlace place registration.racer.id 'lead_route_2' %}</td>
-                  <td>{% getPlace place registration.racer.id 'Q' %}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-
-
+        <table class="table table-striped text-left">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>jméno</th>
+            <th>oddil</th>
+            <th>rok narození</th>
+            <th>cesta 1</th>
+            <th>Q1</th>
+            <th>cesta 2</th>
+            <th>Q2</th>
+            <th>celkem</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for registration in registrations %}
+            <tr>
+              <td>{% getPlace place registration.racer.id 'qSum' %}</td>
+              <td>{{ registration.racer }}</td>
+              <td>{{ registration.racer.club }}</td>
+              <td>{{ registration.racer.born }}</td>
+              <td>{{ registration.lead_route_1|NoneToDash }}</td>
+              <td> {% getPlace place registration.racer.id 'lead_route_1' %}</td>
+              <td>{{ registration.lead_route_2|NoneToDash }}</td>
+              <td>{% getPlace place registration.racer.id 'lead_route_2' %}</td>
+              <td>{% getPlace place registration.racer.id 'Q' %}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
       {% elif  comp.type == '1' %}
-
+ <table class="table table-striped text-left">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>jméno</th>
+            <th>oddil</th>
+            <th>rok narození</th>
+            <th>B1Z</th>
+            <th>B1T</th>
+            <th>B2Z</th>
+            <th>B2T</th>
+            <th>B3Z</th>
+            <th>B3T</th>
+            <th>B4Z</th>
+            <th>B4T</th>
+            <th>B5Z</th>
+            <th>B5T</th>
+            <th>B6Z</th>
+            <th>B6T</th>
+            <th>body</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for registration in registrations %}
+            <tr>
+              <td>{% getPlace place registration.racer.id 'place' %}</td>
+              <td>{{ registration.racer }}</td>
+              <td>{{ registration.racer.club }}</td>
+              <td>{{ registration.racer.born }}</td>
+              <td>{{ registration.boulder_1_top|NoneToDash }}</td>
+              <td>{{ registration.boulder_1_zone|NoneToDash }}</td>
+              <td>{{ registration.boulder_2_top|NoneToDash }}</td>
+              <td>{{ registration.boulder_2_zone|NoneToDash }}</td>
+              <td>{{ registration.boulder_3_top|NoneToDash }}</td>
+              <td>{{ registration.boulder_3_zone|NoneToDash }}</td>
+              <td>{{ registration.boulder_4_top|NoneToDash }}</td>
+              <td>{{ registration.boulder_4_zone|NoneToDash }}</td>
+              <td>{{ registration.boulder_5_top|NoneToDash }}</td>
+              <td>{{ registration.boulder_5_zone|NoneToDash }}</td>
+              <td>{{ registration.boulder_6_top|NoneToDash }}</td>
+              <td>{{ registration.boulder_6_zone|NoneToDash }}</td>
+              <td>{% getPlace place registration.racer.id 'boulderPoints' %}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
       {% elif comp.type == '2' %}
+        <table class="table table-striped text-left">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>jméno</th>
+            <th>oddil</th>
+            <th>rok narození</th>
+            <th>pokus 1</th>
+            <th>pokus 2</th>
+            <th>pokus 3</th>
+            <th>pokus 4</th>
+            <th>nejlepsi cas</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for registration in registrations %}
+            <tr>
+              <td>{% getPlace place registration.racer.id 'place' %}</td>
+              <td>{{ registration.racer }}</td>
+              <td>{{ registration.racer.club }}</td>
+              <td>{{ registration.racer.born }}</td>
+              <td>{{ registration.speed_1|NoneToDash }}</td>
+              <td>{{ registration.speed_2|NoneToDash }}</td>
+              <td>{{ registration.speed_3|NoneToDash }}</td>
+              <td>{{ registration.speed_4|NoneToDash }}</td>
+              <td>{% getPlace place registration.racer.id 'bestTime' %}</td>
 
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
       {% endif %}
 
     {% elif compId %}

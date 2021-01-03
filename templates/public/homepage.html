@@ -13,9 +13,7 @@
         <th>Dataum konání</th>
         <th>typ</th>
         <th>věkový rozptyl</th>
-        <th>systém výsledků</th>
         <th>stav</th>
-        <th>finále</th>
       </tr>
       </thead>
       <tbody>
@@ -32,9 +30,7 @@
           </td>
           <td>{{ comp_type_dict|get_item:comp.type }}</td>
           <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
-          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
           <td>{{ state_dict|get_item_string_key:comp.state }}</td>
-          <td>{{ comp.is_final|boolToWord }}</td>
           </td>
         </tr>
       {% endfor %}
@@ -52,9 +48,7 @@
         <th>Dataum konání</th>
         <th>typ</th>
         <th>věkový rozptyl</th>
-        <th>systém výsledků</th>
         <th>stav</th>
-        <th>finále</th>
       </tr>
       </thead>
       <tbody>
@@ -71,9 +65,7 @@
           </td>
           <td>{{ comp_type_dict|get_item:comp.type }}</td>
           <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
-          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
           <td>{{ state_dict|get_item_string_key:comp.state }}</td>
-          <td>{{ comp.is_final|boolToWord }}</td>
           </td>
         </tr>
       {% endfor %}
@@ -90,9 +82,7 @@
         <th>Dataum konání</th>
         <th>typ</th>
         <th>věkový rozptyl</th>
-        <th>systém výsledků</th>
         <th>stav</th>
-        <th>finále</th>
       </tr>
       </thead>
       <tbody>
@@ -109,9 +99,7 @@
           </td>
           <td>{{ comp_type_dict|get_item:comp.type }}</td>
           <td>{{ comp.min_age }} až {{ comp.max_age }}</td>
-          <td>{{ result_system_dict|get_item:comp.result_system }} </td>
           <td>{{ state_dict|get_item_string_key:comp.state }}</td>
-          <td>{{ comp.is_final|boolToWord }}</td>
           </td>
         </tr>
       {% endfor %}

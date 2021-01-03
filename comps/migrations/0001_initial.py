@@ -23,7 +23,6 @@ class Migration(migrations.Migration):
                 ('max_age', models.IntegerField()),
                 ('result_system', models.CharField(max_length=50)),
                 ('state', models.CharField(max_length=50)),
-                ('is_final', models.IntegerField(default=0)),
             ],
         ),
     ]

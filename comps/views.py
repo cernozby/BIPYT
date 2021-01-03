@@ -39,7 +39,6 @@ def CompsView(request):
         messages.add_message(request, messages.INFO, 'Neoprávnění přístup', 'fmgShort alert-danger')
         return render(request, 'public/homepage.html')
     return render(request, 'private/comps.html', dict(comps=Comps.objects.all(),
-                                                      result_system_dict=Comps().getDictResultSystem(),
                                                       comp_type_dict=Comps().getDictCompType(),
                                                       state_dict=Comps().getDictState()))
 
@@ -187,11 +186,13 @@ def getResults(request, compId=None, categoryId=None):
     dictToRender = dict(compId=compId, categoryId=categoryId)
     if compId and categoryId:
         registration = Registration()
+        comp = Comps.objects.get(id=compId)
 
         dictToRender['category'] = Category.objects.get(id=categoryId)
-        dictToRender['comp'] = Comps.objects.get(id=compId)
+        dictToRender['comp'] = comp
         dictToRender['registrations'] = Registration.objects.filter(category_id=categoryId, )
         dictToRender['place'] = registration.getResults(categoryId)
+
 
 
     elif compId:

@@ -46,7 +46,6 @@ def HomepageDefaultView(request):
     return render(request, 'public/homepage.html', dict(compPrecomp=Comps.objects.filter(state='precomp'),
                                                         compRunning=Comps.objects.filter(state='running'),
                                                         compEnd=Comps.objects.filter(state='end'),
-                                                        result_system_dict=Comps().getDictResultSystem(),
                                                         comp_type_dict=Comps().getDictCompType(),
                                                         state_dict=Comps().getDictState()))
 

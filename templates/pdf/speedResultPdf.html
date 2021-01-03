@@ -51,27 +51,27 @@
           <tr class="border-top">
             <th style="width: 50px">#</th>
             <th width="150px">jméno</th>
-            <th width="150px">oddil</th>
+            <th width="120px">oddil</th>
             <th>rok</th>
-            <th>cesta 1</th>
-            <th>Q1</th>
-            <th>cesta 2</th>
-            <th>Q2</th>
-            <th>celkem</th>
+            <th>pokus 1</th>
+            <th>pokus 2</th>
+            <th>pokus 3</th>
+            <th>pokus 4</th>
+            <th>nejlepsi  </th>
           </tr>
           </thead>
           <tbody>
           {% for registration in registrations %}
                 <tr>
-                  <td>{% getPlace place registration.racer.id 'qSum' %}</td>
+                  <td>{% getPlace place registration.racer.id 'place' %}</td>
                   <td>{{ registration.racer }}</td>
                   <td>{{ registration.racer.club|NoneToDash }}</td>
                   <td>{{ registration.racer.born }}</td>
-                  <td>{{ registration.lead_route_1|NoneToDash }}</td>
-                  <td> {% getPlace place registration.racer.id 'lead_route_1' %}</td>
-                  <td>{{ registration.lead_route_2|NoneToDash }}</td>
-                  <td>{% getPlace place registration.racer.id 'lead_route_2' %}</td>
-                  <td>{% getPlace place registration.racer.id 'Q' %}</td>
+                  <td>{{ registration.speed_1|NoneToDash }}</td>
+                  <td>{{ registration.speed_2|NoneToDash }}</td>
+                  <td>{{ registration.speed_3|NoneToDash }}</td>
+                  <td>{{ registration.speed_4|NoneToDash }}</td>
+                  <td> {% getPlace place registration.racer.id 'bestTime' %}</td>
                 </tr>
               {% endfor %}
           </tbody>

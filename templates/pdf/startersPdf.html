@@ -1,3 +1,4 @@
+{% load comps_filters %}
 <html>
     <head>
         <title>Title</title>
@@ -45,7 +46,7 @@
          <table class="results">
           <thead>
           <tr>
-            <th colspan="4" align="left">{{ comp.name }}</th>
+            <th colspan="4" align="left">{{ comp.name }} - {{ category.name }}</th>
           </tr>
           <tr class="border-top">
             <th style="width: 30px">#</th>
@@ -59,7 +60,7 @@
             <tr>
               <td>{{ forloop.counter }}.</td>
               <td>{{ racer }}</td>
-              <td>{{ racer.club }}</td>
+              <td>{{ racer.club|NoneToDash }}</td>
               <td>{{ racer.born }}</td>
             </tr>
           {% endfor %}

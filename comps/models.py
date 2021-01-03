@@ -21,14 +21,9 @@ class Comps(models.Model):
     type = models.CharField(max_length=50, null=True)
     min_age = models.IntegerField(null=True)
     max_age = models.IntegerField(null=True)
-    result_system = models.CharField(max_length=50, null=True)
     state = models.CharField(max_length=50, null=True)
-    is_final = models.IntegerField(null=True)
     city = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=150, null=True)
-
-    def getDictResultSystem(self):
-        return {0: 'zavodní', 1: 'amatérské'}
 
     def getDictCompType(self):
         return {0: 'obtížnost', 1: 'boulder', 2: 'rychlost'}
@@ -43,8 +38,6 @@ class Comps(models.Model):
                              type=rq.POST['type'],
                              min_age=rq.POST['min_age'],
                              max_age=rq.POST['max_age'],
-                             result_system=rq.POST['result_system'],
-                             is_final=rq.POST['is_final'],
                              city=rq.POST['city'],
                              address=rq.POST['address'],
                              state='prepare'
@@ -58,8 +51,6 @@ class Comps(models.Model):
         comp.type = rq.POST['type']
         comp.min_age = rq.POST['min_age']
         comp.max_age = rq.POST['max_age']
-        comp.result_system = rq.POST['result_system']
-        comp.is_final = rq.POST['is_final']
         comp.city = rq.POST['city']
         comp.address = rq.POST['address']
         comp.state = rq.POST['state']
@@ -132,10 +123,10 @@ class Registration(models.Model):
     boulder_4_top_final = models.CharField(max_length=10, default=None, null=True)
 
     # speed result
-    speeed_1 = models.CharField(max_length=10, default=None, null=True)
-    speeed_2 = models.CharField(max_length=10, default=None, null=True)
-    speeed_3 = models.CharField(max_length=10, default=None, null=True)
-    speeed_4 = models.CharField(max_length=10, default=None, null=True)
+    speed_1 = models.CharField(max_length=10, default=None, null=True)
+    speed_2 = models.CharField(max_length=10, default=None, null=True)
+    speed_3 = models.CharField(max_length=10, default=None, null=True)
+    speed_4 = models.CharField(max_length=10, default=None, null=True)
 
     def getPlace(self, data):
         result = {}
@@ -184,9 +175,9 @@ class Registration(models.Model):
                             result[k] = float(sum / len(beforeKey))
                         else:
                             if len(beforeKey) == 1:
-                                result[k] = str(i-1) + '.'
+                                result[k] = str(i - 1) + '.'
                             else:
-                                result[k] = str(i-len(beforeKey)) + '. - ' + str(i-1) + '.'
+                                result[k] = str(i - len(beforeKey)) + '. - ' + str(i - 1) + '.'
 
                         listKey = listKey + 1
                     beforeItem = []
@@ -208,9 +199,9 @@ class Registration(models.Model):
                     result[k] = sum / len(beforeKey)
                 else:
                     if len(beforeKey) == 1:
-                        result[k] = str(i-1) + '.'
+                        result[k] = str(i - 1) + '.'
                     else:
-                        result[k] = str(i - len(beforeKey)) + '. - ' + str(i-1) + '.'
+                        result[k] = str(i - len(beforeKey)) + '. - ' + str(i - 1) + '.'
                 listKey = listKey + 1
         return result
 
@@ -218,41 +209,135 @@ class Registration(models.Model):
         dataSort = sorted(data.items(), key=lambda x: x[1], reverse=True)
         return self.getPlace(dataSort)
 
-    def getResults(self, categoryId):
-        reg1 = {}
-        reg2 = {}
-        qSum = {}
+    def getBestTime(self, times):
         result = {}
+        for key in times:
+            best = float(9999)
+            for k in times[key]:
+                if times[key][k] is not None and best > float(times[key][k]) > 0:
+                    best = float(times[key][k])
 
-        registrations = Registration.objects.filter(category_id=categoryId)
-        for r in registrations:
-            if r.lead_route_1 == '0' or r.lead_route_1 is None:
-                reg1[r.racer.id] = -1
-            else:
-                reg1[r.racer.id] = int(r.lead_route_1)
-
-            if r.lead_route_2 == '0' or r.lead_route_2 is None:
-                reg2[r.racer.id] = -1
-            else:
-                reg2[r.racer.id] = int(r.lead_route_2)
-
-        reg1 = self.getLeadResult(reg1)
-        reg2 = self.getLeadResult(reg2)
-
-        for x in registrations:
-            qSum[x.racer.id] = round(math.sqrt(reg2[x.racer_id] * reg1[x.racer_id]), 2)
-       
-        qSum = self.getPlace(sorted(qSum.items(), key=lambda w: w[1], reverse=False), 'Place')
-
-
-        for r in registrations:
-            result[r.racer_id] = {'lead_route_1': reg1[r.racer_id],
-                                  'lead_route_2': reg2[r.racer_id],
-                                  'Q': round(math.sqrt(reg2[r.racer_id] * reg1[r.racer_id]), 2),
-                                  'qSum': qSum[r.racer_id]}
-
+            result[key] = best
 
         return result
+
+    def getPointsBoulder(self, boulders):
+        boulderCount = {}
+        pointsPerBoulder = {}
+        result = {}
+
+        boulderCount['boulder_1_zone'] = 0
+        boulderCount['boulder_2_zone'] = 0
+        boulderCount['boulder_3_zone'] = 0
+        boulderCount['boulder_4_zone'] = 0
+        boulderCount['boulder_5_zone'] = 0
+        boulderCount['boulder_6_zone'] = 0
+        boulderCount['boulder_1_top'] = 0
+        boulderCount['boulder_2_top'] = 0
+        boulderCount['boulder_3_top'] = 0
+        boulderCount['boulder_4_top'] = 0
+        boulderCount['boulder_5_top'] = 0
+        boulderCount['boulder_6_top'] = 0
+
+        for key in boulders:
+            for k in boulders[key]:
+                if boulders[key][k] is not 0:
+                    boulderCount[k] = boulderCount[k] + 1
+
+        for key in boulderCount:
+            if boulderCount[key] is not 0:
+                pointsPerBoulder[key] = float(100 / boulderCount[key])
+            else:
+                pointsPerBoulder[key] = float(100)
+
+        for key in boulders:
+            result[key] = 0
+            for k in boulders[key]:
+                if int(boulders[key][k]) > 0:
+                    result[key] = result[key] + boulderCount[k]
+
+        print(result)
+        return result
+
+
+    def getResults(self, categoryId):
+        registrations = Registration.objects.filter(category_id=categoryId)
+        category = Category.objects.get(id=categoryId)
+        result = {}
+
+        if category.comp.type == '0':
+            reg1 = {}
+            reg2 = {}
+            qSum = {}
+
+            for r in registrations:
+                if r.lead_route_1 == '0' or r.lead_route_1 is None:
+                    reg1[r.racer.id] = -1
+                else:
+                    reg1[r.racer.id] = int(r.lead_route_1)
+
+                if r.lead_route_2 == '0' or r.lead_route_2 is None:
+                    reg2[r.racer.id] = -1
+                else:
+                    reg2[r.racer.id] = int(r.lead_route_2)
+
+            reg1 = self.getLeadResult(reg1)
+            reg2 = self.getLeadResult(reg2)
+
+            for x in registrations:
+                qSum[x.racer.id] = round(math.sqrt(reg2[x.racer_id] * reg1[x.racer_id]), 2)
+
+            qSum = self.getPlace(sorted(qSum.items(), key=lambda w: w[1], reverse=False), 'Place')
+
+            for r in registrations:
+                result[r.racer_id] = {'lead_route_1': reg1[r.racer_id],
+                                      'lead_route_2': reg2[r.racer_id],
+                                      'Q': round(math.sqrt(reg2[r.racer_id] * reg1[r.racer_id]), 2),
+                                      'qSum': qSum[r.racer_id]}
+
+            return result
+        if category.comp.type == '1':
+            boulders = {}
+            for r in registrations:
+                boulders[r.racer_id] = {'boulder_1_zone': r.boulder_1_zone,
+                                        'boulder_2_zone': r.boulder_2_zone,
+                                        'boulder_3_zone': r.boulder_3_zone,
+                                        'boulder_4_zone': r.boulder_4_zone,
+                                        'boulder_5_zone': r.boulder_5_zone,
+                                        'boulder_6_zone': r.boulder_6_zone,
+                                        'boulder_1_top': r.boulder_1_top,
+                                        'boulder_2_top': r.boulder_2_top,
+                                        'boulder_3_top': r.boulder_3_top,
+                                        'boulder_4_top': r.boulder_4_top,
+                                        'boulder_5_top': r.boulder_5_top,
+                                        'boulder_6_top': r.boulder_6_top}
+
+            boulders = self.getPointsBoulder(boulders)
+            place = self.getPlace(sorted(boulders.items(), key=lambda w: w[1], reverse=True), 'Place')
+
+
+            for r in registrations:
+                result[r.racer_id] = {'boulderPoints': boulders[r.racer_id],
+                                      'place': place[r.racer_id]}
+            return result
+
+        if category.comp.type == '2':
+            speedTimes = {}
+
+            for r in registrations:
+                speedTimes[r.racer_id] = {'speed_1': r.speed_1,
+                                          'speed_2': r.speed_2,
+                                          'speed_3': r.speed_3,
+                                          'speed_4': r.speed_4}
+
+            bestTime = self.getBestTime(speedTimes)
+
+            place = self.getPlace(sorted(bestTime.items(), key=lambda w: w[1], reverse=False), 'Place')
+            for r in registrations:
+                result[r.racer_id] = {'bestTime': bestTime[r.racer_id],
+                                      'place': place[r.racer_id]}
+
+            return result
 
     def saveResultPair(self, value: str, key: str):
         registrationId = key.split('_')[-1]
@@ -270,6 +355,7 @@ def getStartersPdf(categoryId):
     context_dict = {
         'racers': polls_models.Racer.objects.all().filter(registration__category_id=categoryId),
         'comp': Category.objects.get(id=categoryId).comp,
+        'category': Category.objects.get(id=categoryId),
         'printTime': strftime("%d. %m. %Y %H:%M:%S", gmtime())
     }
 
@@ -284,14 +370,21 @@ def getStartersPdf(categoryId):
 
 def getResultToPdf(categoryId):
     registration = Registration()
+    comp = Category.objects.get(id=categoryId).comp
     context_dict = {
-        'comp': Category.objects.get(id=categoryId).comp,
+        'comp': comp,
+        'category': Category.objects.get(id=categoryId),
         'printTime': strftime("%d. %m. %Y %H:%M:%S", gmtime()),
         'registrations': Registration.objects.filter(category_id=categoryId),
         'place': registration.getResults(categoryId)
     }
 
-    template = get_template('pdf/leadResultsPdf.html')
+    if comp.type == '0':
+        template = get_template('pdf/leadResultsPdf.html')
+    elif comp.type == '1':
+        template = get_template('pdf/boulderResult.html')
+    else:
+        template = get_template('pdf/speedResultPdf.html')
     html = template.render(context_dict)
     result = BytesIO()
     pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
